@@ -1,5 +1,6 @@
 import express from 'express';
 import { Book } from '../models/bookModel.js';
+//import {userModel} from '../models/userModel.js'
 
 const router = express.Router();
 
@@ -7,9 +8,7 @@ const router = express.Router();
 router.post('/', async (request, response) => {
   try {
     if (
-      !request.body.title ||
-      !request.body.author ||
-      !request.body.publishYear
+      !request.body.title 
     ) {
       return response.status(400).send({
         message: 'Send all required fields: title, author, publishYear',
@@ -17,8 +16,6 @@ router.post('/', async (request, response) => {
     }
     const newBook = {
       title: request.body.title,
-      author: request.body.author,
-      publishYear: request.body.publishYear,
     };
 
     const book = await Book.create(newBook);
@@ -63,9 +60,7 @@ router.get('/:id', async (request, response) => {
 router.put('/:id', async (request, response) => {
   try {
     if (
-      !request.body.title ||
-      !request.body.author ||
-      !request.body.publishYear
+      !request.body.title 
     ) {
       return response.status(400).send({
         message: 'Send all required fields: title, author, publishYear',
@@ -115,6 +110,53 @@ router.get('/books/search', async (req, res) => {
 
   const books = await Book.find(query);
   res.json(books);
+});
+
+// Favori kitapları ekleme
+router.post('/favorites/:id', async (req, res) => {
+  const userId = req.userId; // Kullanıcı ID'si, auth middleware'inden geliyor
+  const { id } = request.params;
+  try {
+    const user = await userModel.findById(userId);
+
+    // Eğer kitap zaten favorilerdeyse, çıkar
+    if (user.favoriteBooks.includes(id)) {
+      return res.status(400).json({ message: "This book is already in your favorites" });
+    }
+
+    // Kitap ekle
+    user.favoriteBooks.push(bookId);
+    await user.save();
+
+    res.status(200).json({ message: "Book added to favorites" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding book to favorites" });
+  }
+});
+
+// Favori kitapları çıkarma
+router.delete('/favorites/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.userId; // Kullanıcı ID'si, auth middleware'inden geliyor
+
+  try {
+    const user = await userModel.findById(userId);
+
+    // Eğer kitap favorilerde değilse, hata döndür
+    if (!user.favoriteBooks.includes(id)) {
+      return res.status(400).json({ message: "This book is not in your favorites" });
+    }
+
+    // Kitap çıkar
+    user.favoriteBooks = user.favoriteBooks.filter((id) => !id.equals(id));
+    await user.save();
+
+    res.status(200).json({ message: "Book removed from favorites" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error removing book from favorites" });
+  }
 });
 
 //

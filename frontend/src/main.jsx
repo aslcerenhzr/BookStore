@@ -4,11 +4,10 @@ import App from './App.jsx';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
-import Navbar from './components/Navbar';
+//import Navbar from './components/Navbar';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <Navbar/>
     <SnackbarProvider>
       <App />
     </SnackbarProvider>

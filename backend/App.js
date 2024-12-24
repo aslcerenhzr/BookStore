@@ -1,9 +1,12 @@
 import express from "express";
 import cors from "cors";
-import connectDB from './db.js'; // .js uzantısını ekleyin
-import booksRoute from './routes/booksRoute.js'; // .js uzantısını ekleyin
+import connectDB from './db.js'; 
+import booksRoute from './routes/booksRoute.js';
 import userRoute from './routes/userRoute.js';
+import publisherRoutes from './routes/publisherRoutes.js';
 import authorRoutes from './routes/authorRoutes.js';
+import book_authorRoutes from './routes/book_authorRoute.js';
+import commentRoute from './routes/commentRoute.js';
 
 const app = express();
 
@@ -23,8 +26,12 @@ app.use(cors({
 
 // Route'lar
 app.use('/books', booksRoute);
-app.use('/auth', userRoute);
+app.use('/api/users', userRoute);
 app.use('/authors', authorRoutes);
+app.use('/publishers', publisherRoutes);
+app.use('/relations', book_authorRoutes);
+//app.use('/comment', commentRoute);
+
 
 // Sunucu Dinleme
 const PORT = process.env.PORT || 5555;

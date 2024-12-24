@@ -11,24 +11,26 @@ const EditBook = () => {
   const [publishYear, setPublishYear] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const {id} = useParams();
+  const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`http://localhost:5555/books/${id}`)
-    .then((response) => {
+    axios
+      .get(`http://localhost:5555/books/${id}`)
+      .then((response) => {
         setAuthor(response.data.author);
-        setPublishYear(response.data.publishYear)
-        setTitle(response.data.title)
+        setPublishYear(response.data.publishYear);
+        setTitle(response.data.title);
         setLoading(false);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         setLoading(false);
-        alert('An error happened. Please Chack console');
+        enqueueSnackbar('An error occurred. Please check the console.', { variant: 'error' });
         console.log(error);
       });
-  }, [])
-  
+  }, [id]);
+
   const handleEditBook = () => {
     const data = {
       title,
@@ -45,51 +47,58 @@ const EditBook = () => {
       })
       .catch((error) => {
         setLoading(false);
-        // alert('An error happened. Please Chack console');
-        enqueueSnackbar('Error', { variant: 'error' });
+        enqueueSnackbar('Error editing book', { variant: 'error' });
         console.log(error);
       });
   };
 
   return (
-    <div className='p-4'>
-      <BackButton />
-      <h1 className='text-3xl my-4'>Edit Book</h1>
-      {loading ? <Spinner /> : ''}
-      <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
-        <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Title</label>
+    <div className="bg-background min-h-screen text-text flex flex-col items-center justify-center p-5">
+      <div className="w-full flex justify-start absolute top-5 left-5">
+        <BackButton />
+      </div>
+      <h1 className="text-4xl font-semibold mb-6">Edit Book</h1>
+      {loading && <Spinner />}
+      <div className="bg-secondary p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+        <div className="mb-6">
+          <label className="text-lg mb-2 text-text-secondary block">Title</label>
           <input
-            type='text'
+            type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2 w-full'
+            className="w-full p-3 rounded-lg border border-text-secondary focus:outline-primary bg-background text-text-secondary"
           />
         </div>
-        <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Author</label>
+
+        <div className="mb-6">
+          <label className="text-lg mb-2 text-text-secondary block">Author</label>
           <input
-            type='text'
+            type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2  w-full '
+            className="w-full p-3 rounded-lg border border-text-secondary focus:outline-primary bg-background text-text-secondary"
           />
         </div>
-        <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Publish Year</label>
+
+        <div className="mb-6">
+          <label className="text-lg mb-2 text-text-secondary block">Publish Year</label>
           <input
-            type='number'
+            type="number"
             value={publishYear}
             onChange={(e) => setPublishYear(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2  w-full '
+            className="w-full p-3 rounded-lg border border-text-secondary focus:outline-primary bg-background text-text-secondary"
           />
         </div>
-        <button className='p-2 bg-sky-300 m-8' onClick={handleEditBook}>
+
+        <button
+          onClick={handleEditBook}
+          className="w-full bg-primary text-background py-3 rounded-lg hover:bg-primary/80 transition"
+        >
           Save
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EditBook
+export default EditBook;

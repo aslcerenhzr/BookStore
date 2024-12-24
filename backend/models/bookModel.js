@@ -6,14 +6,7 @@ const bookSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    author: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Author' }],
-      required: true,
-    },
-    publishYear: {
-      type: Number,
-      required: true,
-    },
+    
   },
   {
     timestamps: true,

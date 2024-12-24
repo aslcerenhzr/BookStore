@@ -1,41 +1,38 @@
 import express from 'express';
-import { Author } from '../models/authorModel.js';
+import { Publisher } from '../models/publisherModel.js';
 
 const router = express.Router();
 
-// Route for Save a new Author
+// Route for Save a new Publisher
 router.post('/', async (req, res) => {
   try {
-    // Validate the required fields
     if (!req.body.name) {
       return res.status(400).send({
         message: 'Send all required fields: name',
       });
     }
 
-    // Create a new author object
-    const newAuthor = {
+    const newPublisher = {
       name: req.body.name,
     };
 
-    // Save the new author to the database
-    const author = await Author.create(newAuthor);
+    const publisher = await Publisher.create(newPublisher);
 
-    return res.status(201).send(author);
+    return res.status(201).send(publisher);
   } catch (error) {
     console.log(error.message);
     res.status(500).send({ message: error.message });
   }
 });
 
-// Route for Get All Authors
+// Route for Get All Publishers
 router.get('/', async (req, res) => {
   try {
-    const authors = await Author.find({});
+    const publishers = await Publisher.find({});
 
     return res.status(200).json({
-      count: authors.length,
-      data: authors,
+      count: publishers.length,
+      data: publishers,
     });
   } catch (error) {
     console.log(error.message);
@@ -43,61 +40,56 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Route for Get One Author by id
+// Route for Get One Publisher by id
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const author = await Author.findById(id);
+    const publisher = await Publisher.findById(id);
 
-    if (!author) {
-      return res.status(404).send({ message: 'Author not found' });
-    }
-
-    return res.status(200).json(author);
+    return res.status(200).json(publisher);
   } catch (error) {
     console.log(error.message);
     res.status(500).send({ message: error.message });
   }
 });
 
-// Route for Update an Author
+// Route for Update a Publisher
 router.put('/:id', async (req, res) => {
   try {
-    // Validate the required fields
-    if (!req.body.name || !req.body.birthYear) {
+    if (!req.body.name) {
       return res.status(400).send({
-        message: 'Send all required fields: name, birthYear',
+        message: 'Send all required fields: name',
       });
     }
 
     const { id } = req.params;
 
-    const result = await Author.findByIdAndUpdate(id, req.body, { new: true });
+    const result = await Publisher.findByIdAndUpdate(id, req.body);
 
     if (!result) {
-      return res.status(404).json({ message: 'Author not found' });
+      return res.status(404).json({ message: 'Publisher not found' });
     }
 
-    return res.status(200).send({ message: 'Author updated successfully', author: result });
+    return res.status(200).send({ message: 'Publisher updated successfully' });
   } catch (error) {
     console.log(error.message);
     res.status(500).send({ message: error.message });
   }
 });
 
-// Route for Delete an Author
+// Route for Delete a Publisher
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await Author.findByIdAndDelete(id);
+    const result = await Publisher.findByIdAndDelete(id);
 
     if (!result) {
-      return res.status(404).json({ message: 'Author not found' });
+      return res.status(404).json({ message: 'Publisher not found' });
     }
 
-    return res.status(200).send({ message: 'Author deleted successfully' });
+    return res.status(200).send({ message: 'Publisher deleted successfully' });
   } catch (error) {
     console.log(error.message);
     res.status(500).send({ message: error.message });
